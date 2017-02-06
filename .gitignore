@@ -1,0 +1,4 @@
+/build
+*.o
+/sshd/sshd
+/shell/shell
