@@ -8,7 +8,7 @@ Installation
 
 ### 2. Install dependency
 ```bash
-sudo apt install build-essential libssh-dev libmysqlcppconn-dev
+sudo apt install build-essential libssh-dev libmysqlcppconn-dev libcurl4-openssl-dev
 ```
 
 ### 3. Compile source.
