@@ -3,3 +3,4 @@
 /sshd/sshd
 /shell/shell
 .vscode
+*.exe

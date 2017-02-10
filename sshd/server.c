@@ -1,23 +1,28 @@
 #include <libssh/callbacks.h>
-#include <poll.h>
 #include <libssh/server.h>
+#include <poll.h>
 #include <unistd.h>
 #include <termios.h>
 #include <fcntl.h>
+
 #ifdef HAVE_LIBUTIL_H
-#include <libutil.h>
+# include <libutil.h>
 #endif
+
 #ifdef HAVE_PTY_H
-#include <pty.h>
+# include <pty.h>
 #endif
+
 #include <signal.h>
 #include <stdlib.h>
 #ifdef HAVE_UTMP_H
-#include <utmp.h>
+# include <utmp.h>
 #endif
+
 #ifdef HAVE_UTIL_H
-#include <util.h>
+# include <util.h>
 #endif
+
 #include <sys/ioctl.h>
 #include <sys/wait.h>
 #include <stdio.h>
