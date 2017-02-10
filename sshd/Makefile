@@ -1,15 +1,22 @@
 CC = gcc
-CCX = g++
-CFLAGS = -Wall -std=c11 -D KEYS_FOLDER="\"$(shell pwd)/../build/\"" -D SHELL="\"$(shell pwd)/../build/shell\"" -D PORT=\"2022\" -D _GNU_SOURCE 
+CXX = g++
+CFLAGS = -Wall -std=c11
 OBJS = server.o flarum-login.o
 PROG = sshd
 LDFLAGS = -lssh -lutil -lcurl
 DEST = ../build
 
+CFLAGS += -DKEYS_FOLDER="\"$(shell pwd)/../build/\""
+CFLAGS += -DSHELL="\"$(shell pwd)/../build/shell\""
+CFLAGS += -DPORT=\"2022\"
+CFLAGS += -D_GNU_SOURCE
+
 ifeq ($(DEBUG), FALSE)
 	CFLAGS += -O2
+	CFLAGS += -DFLARUM_URL=\"https://www.cnvintage.org\"
 else
 	CFLAGS += -O0 -g
+	CFLAGS += -DFLARUM_URL=\"http://ntzyz-solaris.lan\"
 endif
 
 ifeq ($(shell uname), Darwin)
@@ -24,7 +31,7 @@ $(PROG): $(OBJS)
 	cp -r $(PROG) $(DEST)
 
 %.o: %.cpp
-	$(CCX) $(CFLAGS) -c $<
+	$(CXX) $(CFLAGS) -c $<
 
 clean:
 	rm -f *.o $(DEST)/$(PROG) $(PROG)

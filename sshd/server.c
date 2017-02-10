@@ -62,6 +62,7 @@ struct channel_data_struct {
     socket_t child_stderr;
     ssh_event event;
     struct winsize *winsize;
+    char *access_token;
 };
 
 
@@ -69,7 +70,7 @@ struct session_data_struct {
     ssh_channel channel;
     int auth_attempts;
     int authenticated;
-	char *access_token;
+	char access_token[50];
 };
 
 static int data_function(ssh_session session, ssh_channel channel, void *data,
@@ -141,7 +142,7 @@ static int exec_pty(const char *mode, const char *command,
             if (login_tty(cdata->pty_slave) != 0) {
                 exit(1);
             }
-            execl(SHELL, SHELL, NULL);
+            execl(SHELL, SHELL, cdata->access_token, NULL);
             exit(0);
         default:
             close(cdata->pty_slave);
@@ -207,11 +208,12 @@ static int auth_password(ssh_session session, const char *user,
 
 	char *token;
 
-	printf("[INFO] user %s wanna login with password: %s", user, pass);
+	printf("[INFO] user %s wanna login with password: %s\n", user, pass);
 
     if ((token = tryLogin_WebApi(user, pass)) != NULL) {
         sdata->authenticated = 1;
-		sdata->access_token = token;
+        strcpy(sdata->access_token, token);
+        free(token);
         return SSH_AUTH_SUCCESS;
     }
 
@@ -267,6 +269,13 @@ static void handle_session(ssh_event event, ssh_session session) {
     };
 
     
+    struct session_data_struct sdata = {
+        .channel = NULL,
+        .auth_attempts = 0,
+        .authenticated = 0
+    };
+
+    
     struct channel_data_struct cdata = {
         .pid = 0,
         .pty_master = -1,
@@ -275,14 +284,8 @@ static void handle_session(ssh_event event, ssh_session session) {
         .child_stdout = -1,
         .child_stderr = -1,
         .event = NULL,
-        .winsize = &wsize
-    };
-
-    
-    struct session_data_struct sdata = {
-        .channel = NULL,
-        .auth_attempts = 0,
-        .authenticated = 0
+        .winsize = &wsize,
+        .access_token = sdata.access_token
     };
 
     struct ssh_channel_callbacks_struct channel_cb = {

@@ -2,11 +2,11 @@
 #include <string>
 #include <sstream>
 
-#include <mysql_connection.h>
-#include <cppconn/driver.h>
-#include <cppconn/exception.h>
-#include <cppconn/resultset.h>
-#include <cppconn/statement.h>
+// #include <mysql_connection.h>
+// #include <cppconn/driver.h>
+// #include <cppconn/exception.h>
+// #include <cppconn/resultset.h>
+// #include <cppconn/statement.h>
 
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -51,6 +51,15 @@ void executeCommands(const char *input, std::string &cwd) {
 }
 
 int main(int argc, char **argv) {
+    if (argc == 1) {
+        std::cerr << "INVALID LOGIN" << std::endl;
+        return 1;
+    }
+    else {
+        std::cout << "Access token: " << argv[1] << std::endl;
+    }
+
+
     if (signal(SIGINT, CtrlC) == SIG_ERR) {
         return 1;
     }

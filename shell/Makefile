@@ -1,5 +1,5 @@
 CC = gcc
-CCX = g++
+CXX = g++
 CFLAGS = -Wall -O2 -std=gnu++11
 OBJS = main.o handlers.o
 PROG = shell
@@ -8,12 +8,12 @@ DEST = ../build
 all: $(PROG)
 
 $(PROG): $(OBJS)
-	$(CCX) $(CFLAGS) $(OBJS) -o $@ $(LDFLAGS) $(LDLIBS)
+	$(CXX) $(CFLAGS) $(OBJS) -o $@ $(LDFLAGS) $(LDLIBS)
 	mkdir -p $(DEST)
 	cp -r $(PROG) $(DEST)/
 
 %.o: %.cpp
-	$(CCX) $(CFLAGS) -c $<
+	$(CXX) $(CFLAGS) -c $<
 
 clean:
 	rm -f *.o $(DEST)/$(PROG) $(PROG)

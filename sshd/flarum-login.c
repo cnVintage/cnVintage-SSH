@@ -52,7 +52,7 @@ char *tryLogin_WebApi(const char *user, const char *pass) {
     char data_fields[POST_FILED_SIZE];
     sprintf(data_fields, "{\"identification\":\"%s\",\"password\":\"%s\"}", user, pass);
     headers = curl_slist_append(headers, "Content-Type: application/json; charset=UTF-8");
-    curl_easy_setopt(curl, CURLOPT_URL, "https://www.cnvintage.org/login");
+    curl_easy_setopt(curl, CURLOPT_URL, FLARUM_URL "/login");
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data_fields);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, strlen(data_fields));
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
@@ -64,6 +64,14 @@ char *tryLogin_WebApi(const char *user, const char *pass) {
     puts(response.content);
     if (strstr(response.content, "permission_denied")) {
         return NULL;
+    }
+    else {
+        char *src = strstr(response.content, "token\":\"") + strlen("token\":\"");
+        char *dest = token;
+        while (*src != '"') {
+            *dest++ = *src++;
+        }
+        *dest = '\0';
     }
 
     free(response.content);
