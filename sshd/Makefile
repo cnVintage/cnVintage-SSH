@@ -28,7 +28,7 @@ all: $(PROG)
 $(PROG): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $@ $(LDFLAGS) $(LDLIBS)
 	mkdir -p $(DEST)
-	cp -r $(PROG) $(DEST)
+	cp -r $(PROG) $(DEST) 
 
 %.o: %.cpp
 	$(CXX) $(CFLAGS) -c $<

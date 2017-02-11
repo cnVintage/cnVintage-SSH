@@ -160,13 +160,13 @@ static int exec_pty(const char *mode, const char *command,
     return SSH_OK;
 }
 
-static int exec_nopty(const char *command, struct channel_data_struct *cdata) {
-    return SSH_ERROR;
-}
+// static int exec_nopty(const char *command, struct channel_data_struct *cdata) {
+//     return SSH_ERROR;
+// }
 
 static int exec_request(ssh_session session, ssh_channel channel,
                         const char *command, void *userdata) {
-    struct channel_data_struct *cdata = (struct channel_data_struct *) userdata;
+    struct channel_data_struct __attribute__((unused)) *cdata = (struct channel_data_struct *) userdata;
     printf("["ANSI_COLOR_GREEN"INFO"ANSI_COLOR_RESET"] client exec request: %s\n", command);
 
     (void) session;

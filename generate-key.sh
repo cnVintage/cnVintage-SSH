@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 if [ -e ./build/ssh_host_rsa_key ]; then
   echo "Keys already exist, skipping..."
