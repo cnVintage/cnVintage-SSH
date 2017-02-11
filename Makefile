@@ -6,6 +6,7 @@ all:
 	$(MAKE) -C sshd
 	$(MAKE) -C shell
 	./generate-key.sh
+	
 clean:
 	$(MAKE) -C sshd clean
 	$(MAKE) -C shell clean
