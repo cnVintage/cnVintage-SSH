@@ -33,6 +33,14 @@
 #define SESSION_END (SSH_CLOSED | SSH_CLOSED_ERROR)
 #define SFTP_SERVER_PATH "/usr/lib/sftp-server"
 
+#define ANSI_COLOR_RED     "\x1b[31m"
+#define ANSI_COLOR_GREEN   "\x1b[32m"
+#define ANSI_COLOR_YELLOW  "\x1b[33m"
+#define ANSI_COLOR_BLUE    "\x1b[34m"
+#define ANSI_COLOR_MAGENTA "\x1b[35m"
+#define ANSI_COLOR_CYAN    "\x1b[36m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
+
 extern int openpty(int *, int *, char *, struct termios *, struct winsize *);
 extern int login_tty(int);
 
@@ -159,19 +167,21 @@ static int exec_nopty(const char *command, struct channel_data_struct *cdata) {
 static int exec_request(ssh_session session, ssh_channel channel,
                         const char *command, void *userdata) {
     struct channel_data_struct *cdata = (struct channel_data_struct *) userdata;
-
+    printf("["ANSI_COLOR_GREEN"INFO"ANSI_COLOR_RESET"] client exec request: %s\n", command);
 
     (void) session;
     (void) channel;
 
-    if(cdata->pid > 0) {
-        return SSH_ERROR;
-    }
+    return SSH_ERROR;
 
-    if (cdata->pty_master != -1 && cdata->pty_slave != -1) {
-        return exec_pty("-c", command, cdata);
-    }
-    return exec_nopty(command, cdata);
+    // if(cdata->pid > 0) {
+    //     return SSH_ERROR;
+    // }
+
+    // if (cdata->pty_master != -1 && cdata->pty_slave != -1) {
+    //     return exec_pty("-c", command, cdata);
+    // }
+    // return exec_nopty(command, cdata);
 }
 
 static int shell_request(ssh_session session, ssh_channel channel,
@@ -194,8 +204,9 @@ static int shell_request(ssh_session session, ssh_channel channel,
 
 static int subsystem_request(ssh_session session, ssh_channel channel,
                              const char *subsystem, void *userdata) {
-        if (strcmp(subsystem, "sftp") == 0) {
-        return exec_request(session, channel, SFTP_SERVER_PATH, userdata);
+    printf("["ANSI_COLOR_GREEN"INFO"ANSI_COLOR_RESET"] Client require subsystem: %s\n", subsystem);
+    if (strcmp(subsystem, "sftp") == 0) {
+        return SSH_ERROR;
     }
     return SSH_ERROR;
 }
@@ -208,7 +219,7 @@ static int auth_password(ssh_session session, const char *user,
 
 	char *token;
 
-	printf("[INFO] user %s wanna login with password: %s\n", user, pass);
+	printf("["ANSI_COLOR_GREEN"INFO"ANSI_COLOR_RESET"] user %s wanna login with password: %s\n", user, pass);
 
     if ((token = tryLogin_WebApi(user, pass)) != NULL) {
         sdata->authenticated = 1;

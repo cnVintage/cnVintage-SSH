@@ -16,7 +16,7 @@ ifeq ($(DEBUG), FALSE)
 	CFLAGS += -DFLARUM_URL=\"https://www.cnvintage.org\"
 else
 	CFLAGS += -O0 -g
-	CFLAGS += -DFLARUM_URL=\"http://ntzyz-solaris.lan\"
+	CFLAGS += -DFLARUM_URL=\"http://arch-dev.lan\"
 endif
 
 ifeq ($(shell uname), Darwin)
