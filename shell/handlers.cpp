@@ -1,6 +1,8 @@
 #include <iostream>
+#include <vector>
 
 #include "handlers.h"
+#include "mtools.h"
 
 #define ANSI_COLOR_RED     "\x1b[31m"
 #define ANSI_COLOR_GREEN   "\x1b[32m"
@@ -10,16 +12,17 @@
 #define ANSI_COLOR_CYAN    "\x1b[36m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
-void helpHandler(const char *cmdline, std::stringstream& arguments, std::string &cwd) {
-    using namespace std;
-    cout << "Commands list:" << endl
-            << "  help     - Print this help message." << endl
-            << "  ls       - List directory contents." << endl
-            << "  cd       - Change current directory." << endl
-            << "  cat      - Concatenate files and print on the standard output." << endl
-            << "  pwd      - Print current directory." << endl
-            << "  whoami   - Print effective userid." << endl
-            << "  exit     - Exit cnVintage." << endl;
+void helpHandler(const char *cmdline, std::stringstream& arguments, folder &cwd) {
+	using namespace std;
+	cout << "Commands list:" << endl
+		<< "  help     - Print this help message." << endl
+		<< "  ls       - List directory contents." << endl
+		<< "  cd       - Change current directory." << endl
+		<< "  tree     - All files are listed." << endl
+		<< "  cat      - Concatenate files and print on the standard output." << endl
+		<< "  pwd      - Print current directory." << endl
+		<< "  whoami   - Print effective userid." << endl
+		<< "  exit     - Exit cnVintage." << endl;
 }
 
 /**
@@ -31,44 +34,54 @@ void helpHandler(const char *cmdline, std::stringstream& arguments, std::string 
  *  |
  *  +- users
  */
-void lsHandler(const char *cmdline, std::stringstream& arguments, std::string &cwd) {
+
+void lsHandler(const char *cmdline, std::stringstream& arguments, folder &cwd) {
     using namespace std;
 
-    // FIXME: rewrite this stupid code.
-    if (cwd == "/") {
-        cout << ANSI_COLOR_BLUE << "discussions\tusers" << ANSI_COLOR_RESET << endl;
-    } else if (cwd == "/discussions") {
-        cout << ANSI_COLOR_BLUE << "all\tby-tag" << ANSI_COLOR_RESET << endl;
-    } else if (cwd == "/discussions/all") {
-        cout << ANSI_COLOR_RED << "ERROR: not implemented" << ANSI_COLOR_RESET << endl;
-    } else if (cwd == "/discussions/by-tag") {
-        cout << ANSI_COLOR_RED << "ERROR: not implemented" << ANSI_COLOR_RESET << endl;
-    } else if (cwd == "/users") {
-        cout << ANSI_COLOR_RED << "ERROR: not implemented" << ANSI_COLOR_RESET << endl;
-    }
+	cout << ANSI_COLOR_BLUE;
+	for(folder *optfolder : cwd.folders)
+	{
+		cout << optfolder->name << "\t";
+	}
+	cout << ANSI_COLOR_RESET;
+	
+	cout << ANSI_COLOR_CYAN;
+	for(string opts : cwd.files)
+	{
+		cout << opts << "\t";
+	}
+	cout << ANSI_COLOR_RESET << endl;
 }
 
 
-void cdHandler(const char *cmdline, std::stringstream& arguments, std::string &cwd) {
-    using namespace std;
-    
-    // FIXME: rewrite this stupid code.
-    string dest;
-    arguments >> dest;
-    if (dest[0] == '/') {
-        cwd = dest;
-    } else if (dest == ".") {
-        return;
-    } else if (dest == "..") {
-        string parent = cwd.substr(0, cwd.find_last_of('/'));
-        cwd = parent;
-        if (cwd == "") {
-            cwd = "/";
-        }
-    }
+void cdHandler(const char *cmdline, std::stringstream& arguments, folder &cwd) {
+	using namespace std;
+
+	string dest;
+	arguments >> dest;
+	
+	if (moveToPath(dest, cwd))
+		cout << ANSI_COLOR_RED <<
+		"No such file or directory"
+		<< ANSI_COLOR_RESET << endl;
 }
 
-void pwdHandler(const char *cmdline, std::stringstream& arguments, std::string &cwd) {
+void pwdHandler(const char *cmdline, std::stringstream& arguments, folder &cwd) {
     using namespace std;
-    cout << cwd << endl;
+    cout << cwd.getPath() << endl;
+}
+
+void treeHandler(const char *cmdline, std::stringstream& arguments, folder &cwd) {
+	using namespace std;
+
+	folder tempcwd = cwd;
+	string dest;
+	arguments >> dest;
+
+	if (dest!="" && moveToPath(dest, tempcwd))
+		cout << ANSI_COLOR_RED <<
+		"No such file or directory"
+		<< ANSI_COLOR_RESET << endl;
+
+	showChild(tempcwd, string(""));
 }

@@ -1,7 +1,7 @@
 CC = gcc
 CXX = g++
 CFLAGS = -Wall -O2 -std=gnu++11
-OBJS = main.o handlers.o
+OBJS = main.o handlers.o mtools.o
 PROG = shell
 LDFLAGS = -lreadline
 DEST = ../build

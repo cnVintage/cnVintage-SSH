@@ -14,6 +14,7 @@
 #include <signal.h>
 
 #include "handlers.h"
+#include "mtools.h"
 
 const char *motd = "Welcome to:\n"
                    "          __     ___       _                   \n"
@@ -31,8 +32,9 @@ static void CtrlC(int sig) {
     rl_redisplay();
 }
 
-void executeCommands(const char *input, std::string &cwd) {
+int executeCommands(const char *input, folder &cwd) {
     using namespace std;
+
     stringstream ss(input);
     string baseCommand;
     ss >> baseCommand;
@@ -45,12 +47,36 @@ void executeCommands(const char *input, std::string &cwd) {
         cdHandler(input, ss, cwd);
     } else if (baseCommand == string("pwd")) {
         pwdHandler(input, ss, cwd);
-    } else {
-        cout << "cnVintage: command not found: " << baseCommand << endl;
-    }
+	} else if (baseCommand == string("tree")) {
+		treeHandler(input, ss, cwd);
+    } else if (baseCommand == string("exit")){
+		cout << "Bye" << endl;
+		return -1;
+	} else {
+		cout << "cnVintage: command not found: " << baseCommand << endl;
+	}
+
+	return 0;
+}
+
+folder* initFileSystem() {
+	using namespace std;
+	folder *root = new folder("/");
+	folder *discussions = new folder("discussions");
+	folder *users = new folder("users");
+	folder *all = new folder("all");
+	folder *by_tag = new folder("by-tag");
+	discussions->addClip(*all);
+	discussions->addClip(*by_tag);
+	root->addClip(*discussions);
+	root->addClip(*users);
+
+	return root;
 }
 
 int main(int argc, char **argv) {
+	using namespace std;
+
     if (argc == 1) {
         std::cerr << "INVALID LOGIN" << std::endl;
         return 1;
@@ -59,22 +85,24 @@ int main(int argc, char **argv) {
         std::cout << "Access token: " << argv[1] << std::endl;
     }
 
-
     if (signal(SIGINT, CtrlC) == SIG_ERR) {
         return 1;
     }
 
     char *buf = nullptr;
-    std::string cwd = "/";
-
-    std::cout << motd << std::endl;
+	folder *fileSystem = initFileSystem();
+	folder cwd = *fileSystem;
+    
+	cout << motd << endl;
     while ((buf = readline("cnVintage% ")) != nullptr) {
         if (*buf)
             add_history(buf);
-        executeCommands(buf, cwd);
+		if (executeCommands(buf, cwd) == -1)
+			break;
     }
 
     free(buf);
-
+	fileSystem->dispose();
+    
     return 0;
 }
