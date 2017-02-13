@@ -47,35 +47,35 @@ int executeCommands(const char *input, folder &cwd) {
         cdHandler(input, ss, cwd);
     } else if (baseCommand == string("pwd")) {
         pwdHandler(input, ss, cwd);
-	} else if (baseCommand == string("tree")) {
-		treeHandler(input, ss, cwd);
+    } else if (baseCommand == string("tree")) {
+        treeHandler(input, ss, cwd);
     } else if (baseCommand == string("exit")){
-		cout << "Bye" << endl;
-		return -1;
-	} else {
-		cout << "cnVintage: command not found: " << baseCommand << endl;
-	}
+        cout << "Bye" << endl;
+        return -1;
+    } else {
+        cout << "cnVintage: command not found: " << baseCommand << endl;
+    }
 
-	return 0;
+    return 0;
 }
 
 folder* initFileSystem() {
-	using namespace std;
-	folder *root = new folder("/");
-	folder *discussions = new folder("discussions");
-	folder *users = new folder("users");
-	folder *all = new folder("all");
-	folder *by_tag = new folder("by-tag");
-	discussions->addClip(*all);
-	discussions->addClip(*by_tag);
-	root->addClip(*discussions);
-	root->addClip(*users);
+    using namespace std;
+    folder *root = new folder("/");
+    folder *discussions = new folder("discussions");
+    folder *users = new folder("users");
+    folder *all = new folder("all");
+    folder *by_tag = new folder("by-tag");
+    discussions->addClip(*all);
+    discussions->addClip(*by_tag);
+    root->addClip(*discussions);
+    root->addClip(*users);
 
-	return root;
+    return root;
 }
 
 int main(int argc, char **argv) {
-	using namespace std;
+    using namespace std;
 
     if (argc == 1) {
         std::cerr << "INVALID LOGIN" << std::endl;
@@ -90,19 +90,19 @@ int main(int argc, char **argv) {
     }
 
     char *buf = nullptr;
-	folder *fileSystem = initFileSystem();
-	folder cwd = *fileSystem;
+    folder *fileSystem = initFileSystem();
+    folder cwd = *fileSystem;
     
-	cout << motd << endl;
+    cout << motd << endl;
     while ((buf = readline("cnVintage% ")) != nullptr) {
         if (*buf)
             add_history(buf);
-		if (executeCommands(buf, cwd) == -1)
-			break;
+        if (executeCommands(buf, cwd) == -1)
+            break;
     }
 
     free(buf);
-	fileSystem->dispose();
+    fileSystem->dispose();
     
     return 0;
 }

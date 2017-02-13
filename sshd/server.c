@@ -78,7 +78,7 @@ struct session_data_struct {
     ssh_channel channel;
     int auth_attempts;
     int authenticated;
-	char access_token[50];
+    char access_token[50];
 };
 
 static int data_function(ssh_session session, ssh_channel channel, void *data,
@@ -217,9 +217,9 @@ static int auth_password(ssh_session session, const char *user,
 
     (void) session;
 
-	char *token;
+    char *token;
 
-	printf("["ANSI_COLOR_GREEN"INFO"ANSI_COLOR_RESET"] user %s wanna login with password: %s\n", user, pass);
+    printf("["ANSI_COLOR_GREEN"INFO"ANSI_COLOR_RESET"] user %s wanna login with password: %s\n", user, pass);
 
     if ((token = tryLogin_WebApi(user, pass)) != NULL) {
         sdata->authenticated = 1;

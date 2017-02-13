@@ -13,16 +13,16 @@
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
 void helpHandler(const char *cmdline, std::stringstream& arguments, folder &cwd) {
-	using namespace std;
-	cout << "Commands list:" << endl
-		<< "  help     - Print this help message." << endl
-		<< "  ls       - List directory contents." << endl
-		<< "  cd       - Change current directory." << endl
-		<< "  tree     - All files are listed." << endl
-		<< "  cat      - Concatenate files and print on the standard output." << endl
-		<< "  pwd      - Print current directory." << endl
-		<< "  whoami   - Print effective userid." << endl
-		<< "  exit     - Exit cnVintage." << endl;
+    using namespace std;
+    cout << "Commands list:" << endl
+        << "  help     - Print this help message." << endl
+        << "  ls       - List directory contents." << endl
+        << "  tree     - List directory contents recursively." << endl
+        << "  cd       - Change current directory." << endl
+        << "  cat      - Concatenate files and print on the standard output." << endl
+        << "  pwd      - Print current directory." << endl
+        << "  whoami   - Print effective userid." << endl
+        << "  exit     - Exit cnVintage." << endl;
 }
 
 /**
@@ -38,32 +38,33 @@ void helpHandler(const char *cmdline, std::stringstream& arguments, folder &cwd)
 void lsHandler(const char *cmdline, std::stringstream& arguments, folder &cwd) {
     using namespace std;
 
-	cout << ANSI_COLOR_BLUE;
-	for(folder *optfolder : cwd.folders)
-	{
-		cout << optfolder->name << "\t";
-	}
-	cout << ANSI_COLOR_RESET;
-	
-	cout << ANSI_COLOR_CYAN;
-	for(string opts : cwd.files)
-	{
-		cout << opts << "\t";
-	}
-	cout << ANSI_COLOR_RESET << endl;
+    cout << ANSI_COLOR_BLUE;
+    for(folder *optfolder : cwd.folders)
+    {
+        cout << optfolder->name << "\t";
+    }
+    cout << ANSI_COLOR_RESET;
+    
+    cout << ANSI_COLOR_CYAN;
+    for(string opts : cwd.files)
+    {
+        cout << opts << "\t";
+    }
+    cout << ANSI_COLOR_RESET << endl;
 }
 
 
 void cdHandler(const char *cmdline, std::stringstream& arguments, folder &cwd) {
-	using namespace std;
+    using namespace std;
 
-	string dest;
-	arguments >> dest;
-	
-	if (moveToPath(dest, cwd))
-		cout << ANSI_COLOR_RED <<
-		"No such file or directory"
-		<< ANSI_COLOR_RESET << endl;
+    string dest;
+    arguments >> dest;
+    
+    if (moveToPath(dest, cwd))
+        cout << ANSI_COLOR_RED 
+             << "No such file or directory"
+             << ANSI_COLOR_RESET
+             << endl;
 }
 
 void pwdHandler(const char *cmdline, std::stringstream& arguments, folder &cwd) {
@@ -72,16 +73,17 @@ void pwdHandler(const char *cmdline, std::stringstream& arguments, folder &cwd) 
 }
 
 void treeHandler(const char *cmdline, std::stringstream& arguments, folder &cwd) {
-	using namespace std;
+    using namespace std;
 
-	folder tempcwd = cwd;
-	string dest;
-	arguments >> dest;
+    folder tempcwd = cwd;
+    string dest;
+    arguments >> dest;
 
-	if (dest!="" && moveToPath(dest, tempcwd))
-		cout << ANSI_COLOR_RED <<
-		"No such file or directory"
-		<< ANSI_COLOR_RESET << endl;
+    if (dest!="" && moveToPath(dest, tempcwd))
+        cout << ANSI_COLOR_RED
+             << "No such file or directory"
+             << ANSI_COLOR_RESET
+             << endl;
 
-	showChild(tempcwd, string(""));
+    showChild(tempcwd, string(""));
 }

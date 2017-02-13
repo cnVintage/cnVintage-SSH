@@ -4,3 +4,4 @@
 /shell/shell
 .vscode
 *.exe
+*.stackdump
