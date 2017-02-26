@@ -23,7 +23,7 @@ const char *motd = "Welcome to:\n"
                    " | (__| | | \\ V / | | | | | || (_| | (_| |  __/\n"
                    "  \\___|_| |_|\\_/  |_|_| |_|\\__\\__,_|\\__, |\\___|\n"
                    "                                    |___/      \n"
-                   "Type help to to get support on commands and navigation.\n";
+                   "Type help to get support on commands and navigation.\n";
 
 static void CtrlC(int sig) {
     printf("\n");
